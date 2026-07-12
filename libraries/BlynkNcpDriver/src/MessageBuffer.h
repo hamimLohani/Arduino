@@ -10,10 +10,10 @@
 extern "C" {
 #endif
 
-typedef struct buffer_t {
+typedef struct rpc_buffer_t {
     uint8_t* data;
     size_t   length;
-} buffer_t;
+} rpc_buffer_t;
 
 typedef struct MessageBuffer {
     uint8_t*  _buffer;
@@ -27,18 +27,18 @@ void    MessageBuffer_init(MessageBuffer* self, uint8_t* buffer, size_t size);
 void    MessageBuffer_rewind(MessageBuffer* self);
 void    MessageBuffer_reset(MessageBuffer* self);
 void    MessageBuffer_setBuffer(MessageBuffer* self, uint8_t* buffer, size_t size);
-uint8_t* MessageBuffer_getBuffer(MessageBuffer* self);
-size_t  MessageBuffer_getSize(MessageBuffer* self);
-size_t  MessageBuffer_getWritten(MessageBuffer* self);
+uint8_t* MessageBuffer_getBuffer(const MessageBuffer* self);
+size_t  MessageBuffer_getSize(const MessageBuffer* self);
+size_t  MessageBuffer_getWritten(const MessageBuffer* self);
 void    MessageBuffer_setWritten(MessageBuffer* self, size_t s);
-size_t  MessageBuffer_availableToRead(MessageBuffer* self);
-size_t  MessageBuffer_availableToWrite(MessageBuffer* self);
-bool    MessageBuffer_getError(MessageBuffer* self);
+size_t  MessageBuffer_availableToRead(const MessageBuffer* self);
+size_t  MessageBuffer_availableToWrite(const MessageBuffer* self);
+bool    MessageBuffer_getError(const MessageBuffer* self);
 
 /* Read */
 size_t MessageBuffer_readString(MessageBuffer* self, const char** value);
-size_t MessageBuffer_readBinary(MessageBuffer* self, buffer_t* value);
-size_t MessageBuffer_readFixedBuffer(MessageBuffer* self, buffer_t* value, unsigned len);
+size_t MessageBuffer_readBinary(MessageBuffer* self, rpc_buffer_t* value);
+size_t MessageBuffer_readFixedBuffer(MessageBuffer* self, rpc_buffer_t* value, unsigned len);
 size_t MessageBuffer_readBool(MessageBuffer* self, bool* value);
 size_t MessageBuffer_readInt8(MessageBuffer* self, int8_t* value);
 size_t MessageBuffer_readInt16(MessageBuffer* self, int16_t* value);

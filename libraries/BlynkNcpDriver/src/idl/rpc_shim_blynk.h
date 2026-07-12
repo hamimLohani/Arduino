@@ -12,10 +12,10 @@ extern "C" {
 static inline
 bool rpc_blynk_getNcpVersion(const char** ver) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_GETNCPVERSION);
   MessageWriter_end();
@@ -30,11 +30,14 @@ bool rpc_blynk_getNcpVersion(const char** ver) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -42,10 +45,10 @@ bool rpc_blynk_getNcpVersion(const char** ver) {
 static inline
 bool rpc_blynk_setVendorPrefix(const char* vendor) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_SETVENDORPREFIX);
   MessageWriter_writeString(vendor);
@@ -60,11 +63,14 @@ bool rpc_blynk_setVendorPrefix(const char* vendor) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -72,10 +78,10 @@ bool rpc_blynk_setVendorPrefix(const char* vendor) {
 static inline
 bool rpc_blynk_setVendorServer(const char* host) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_SETVENDORSERVER);
   MessageWriter_writeString(host);
@@ -90,11 +96,14 @@ bool rpc_blynk_setVendorServer(const char* host) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -102,10 +111,10 @@ bool rpc_blynk_setVendorServer(const char* host) {
 static inline
 bool rpc_blynk_setFirmwareInfo(const char* type, const char* version, const char* build, const char* blynk) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_SETFIRMWAREINFO);
   MessageWriter_writeString(type);
@@ -123,11 +132,14 @@ bool rpc_blynk_setFirmwareInfo(const char* type, const char* version, const char
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -135,10 +147,10 @@ bool rpc_blynk_setFirmwareInfo(const char* type, const char* version, const char
 static inline
 bool rpc_blynk_initialize(const char* templateID, const char* templateName) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_INITIALIZE);
   MessageWriter_writeString(templateID);
@@ -154,22 +166,27 @@ bool rpc_blynk_initialize(const char* templateID, const char* templateName) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Device name that is broadcasted during the configuration process
+ */
 static inline
 bool rpc_blynk_getHotspotName(const char** hotspot) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_GETHOTSPOTNAME);
   MessageWriter_end();
@@ -184,22 +201,27 @@ bool rpc_blynk_getHotspotName(const char** hotspot) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Check if NCP has all the required configuration to try connecting to the Cloud
+ */
 static inline
 bool rpc_blynk_isConfigured(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_ISCONFIGURED);
   MessageWriter_end();
@@ -213,22 +235,27 @@ bool rpc_blynk_isConfigured(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Enter configuration mode
+ */
 static inline
 bool rpc_blynk_configStart(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_CONFIGSTART);
   MessageWriter_end();
@@ -242,22 +269,27 @@ bool rpc_blynk_configStart(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Exit configuration mode
+ */
 static inline
 bool rpc_blynk_configStop(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_CONFIGSTOP);
   MessageWriter_end();
@@ -271,22 +303,27 @@ bool rpc_blynk_configStop(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Erase Blynk Cloud configuration
+ */
 static inline
 bool rpc_blynk_configReset(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_CONFIGRESET);
   MessageWriter_end();
@@ -300,22 +337,27 @@ bool rpc_blynk_configReset(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Configuration mode timeout. Default: 180 seconds
+ */
 static inline
 bool rpc_blynk_setConfigTimeout(uint16_t timeout) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_SETCONFIGTIMEOUT);
   MessageWriter_writeUInt16(timeout);
@@ -330,22 +372,27 @@ bool rpc_blynk_setConfigTimeout(uint16_t timeout) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * If configuration is skipped N times, device won't automatically enter configuration mode. Configuration reset is required to enter the configuration mode again. Default: 10 times
+ */
 static inline
 bool rpc_blynk_setConfigSkipLimit(uint8_t count) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_SETCONFIGSKIPLIMIT);
   MessageWriter_writeUInt8(count);
@@ -360,22 +407,28 @@ bool rpc_blynk_setConfigSkipLimit(uint8_t count) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Initialize NCP time from an external time source
+ *   time - Current time in milliseconds elapsed since the UNIX epoch
+ */
 static inline
 bool rpc_blynk_setTime(int64_t time) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_SETTIME);
   MessageWriter_writeInt64(time);
@@ -390,22 +443,30 @@ bool rpc_blynk_setTime(int64_t time) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ *   time - Current time in milliseconds elapsed since the UNIX epoch
+ *   offset - Local time offset in minutes, including DST
+ *   tz_abbr - Timezone abbreviation
+ *   dst_status - 0 - No information, 1 - Not Applicable, 2 - Active, 3 - Inactive
+ */
 static inline
 bool rpc_blynk_getTime(const char** iso8601, int64_t* time, int16_t* offset, const char** tz_abbr, uint8_t* dst_status) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_GETTIME);
   MessageWriter_end();
@@ -424,22 +485,30 @@ bool rpc_blynk_getTime(const char** iso8601, int64_t* time, int16_t* offset, con
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ *   lat - Approximate GPS latitude
+ *   lon - Approximate GPS longitude
+ *   olson_id - OLSON timezone id
+ *   posix_tz - POSIX timezone rule
+ */
 static inline
 bool rpc_blynk_getLocationInfo(const char** lat, const char** lon, const char** olson_id, const char** posix_tz) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_GETLOCATIONINFO);
   MessageWriter_end();
@@ -457,11 +526,14 @@ bool rpc_blynk_getLocationInfo(const char** lat, const char** lon, const char** 
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -469,10 +541,10 @@ bool rpc_blynk_getLocationInfo(const char** lat, const char** lon, const char** 
 static inline
 bool rpc_blynk_otaUpdateStart(uint16_t chunk) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_OTAUPDATESTART);
   MessageWriter_writeUInt16(chunk);
@@ -487,11 +559,14 @@ bool rpc_blynk_otaUpdateStart(uint16_t chunk) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -499,10 +574,10 @@ bool rpc_blynk_otaUpdateStart(uint16_t chunk) {
 static inline
 bool rpc_blynk_otaUpdateGetCRC32(uint32_t* crc) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_OTAUPDATEGETCRC32);
   MessageWriter_end();
@@ -517,22 +592,25 @@ bool rpc_blynk_otaUpdateGetCRC32(uint32_t* crc) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
 
 static inline
-bool rpc_blynk_otaUpdateGetMD5(buffer_t* digest) {
+bool rpc_blynk_otaUpdateGetMD5(rpc_buffer_t* digest) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_OTAUPDATEGETMD5);
   MessageWriter_end();
@@ -547,22 +625,25 @@ bool rpc_blynk_otaUpdateGetMD5(buffer_t* digest) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
 
 static inline
-bool rpc_blynk_otaUpdateGetSHA256(buffer_t* digest) {
+bool rpc_blynk_otaUpdateGetSHA256(rpc_buffer_t* digest) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_OTAUPDATEGETSHA256);
   MessageWriter_end();
@@ -577,22 +658,27 @@ bool rpc_blynk_otaUpdateGetSHA256(buffer_t* digest) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Prefetch the firmware file, to reduce the risk of download failure
+ */
 static inline
 uint8_t rpc_blynk_otaUpdatePrefetch(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   uint8_t _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_OTAUPDATEPREFETCH);
   MessageWriter_end();
@@ -606,22 +692,63 @@ uint8_t rpc_blynk_otaUpdatePrefetch(void) {
     MessageBuffer_readUInt8(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Suspend OTA during important operations
+ *   timeout - Timeout in seconds, max 18 hours. Specify 0 to resume OTA
+ */
 static inline
-bool rpc_blynk_factoryReset(void) {
+bool rpc_blynk_otaUpdateSuspend(uint16_t timeout) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
+  /* Send request */
+  const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_OTAUPDATESUSPEND);
+  MessageWriter_writeUInt16(timeout);
+  MessageWriter_end();
+
+  /* Wait response */
+  MessageBuffer _rsp_buff;
+  MessageBuffer_init(&_rsp_buff, NULL, 0);
+  _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, RPC_TIMEOUT_DEFAULT);
+  if (_rpc_res == RPC_STATUS_OK) {
+    /* Deserialize outputs */
+    MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
+  }
+  if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
+    return _rpc_ret_val;
+  }
+
+  rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
+  return _rpc_ret_val;
+}
+
+/*
+ * Erase all configuration and reboot
+ */
+static inline
+bool rpc_blynk_factoryReset(void) {
+  RpcStatus _rpc_res;
+  bool _rpc_ret_val;
+  memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
+
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_FACTORYRESET);
   MessageWriter_end();
@@ -635,22 +762,27 @@ bool rpc_blynk_factoryReset(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Start a SoftAP on the specified channel for the frequency test
+ */
 static inline
 uint8_t rpc_blynk_factoryTestWiFiAP(uint16_t channel) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   uint8_t _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_FACTORYTESTWIFIAP);
   MessageWriter_writeUInt16(channel);
@@ -665,54 +797,62 @@ uint8_t rpc_blynk_factoryTestWiFiAP(uint16_t channel) {
     MessageBuffer_readUInt8(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
 
 static inline
-uint8_t rpc_blynk_factoryTestWiFi(const char* ssid, const char* pass, int16_t* rssi) {
+uint8_t rpc_blynk_factoryTestWiFi(const char* ssid, const char* password, int16_t* rssi) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   uint8_t _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_FACTORYTESTWIFI);
   MessageWriter_writeString(ssid);
-  MessageWriter_writeString(pass);
+  MessageWriter_writeString(password);
   MessageWriter_end();
 
   /* Wait response */
   MessageBuffer _rsp_buff;
   MessageBuffer_init(&_rsp_buff, NULL, 0);
-  _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, 15000);
+  _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, 30000);
   if (_rpc_res == RPC_STATUS_OK) {
     /* Deserialize outputs */
     MessageBuffer_readInt16(&_rsp_buff, rssi);
     MessageBuffer_readUInt8(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Test connection to the default server
+ */
 static inline
 uint8_t rpc_blynk_factoryTestConnect(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   uint8_t _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_FACTORYTESTCONNECT);
   MessageWriter_end();
@@ -726,11 +866,14 @@ uint8_t rpc_blynk_factoryTestConnect(void) {
     MessageBuffer_readUInt8(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -738,10 +881,10 @@ uint8_t rpc_blynk_factoryTestConnect(void) {
 static inline
 uint8_t rpc_blynk_getState(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   uint8_t _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_BLYNK_GETSTATE);
   MessageWriter_end();
@@ -755,17 +898,21 @@ uint8_t rpc_blynk_getState(void) {
     MessageBuffer_readUInt8(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
 
 static inline
-void rpc_blynk_virtualWrite(uint16_t vpin, buffer_t value) {
+void rpc_blynk_virtualWrite(uint16_t vpin, rpc_buffer_t value) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_VIRTUALWRITE);
   MessageWriter_writeUInt16(vpin);
@@ -773,11 +920,13 @@ void rpc_blynk_virtualWrite(uint16_t vpin, buffer_t value) {
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
-void rpc_blynk_setProperty(uint16_t vpin, const char* property, buffer_t value) {
+void rpc_blynk_setProperty(uint16_t vpin, const char* property, rpc_buffer_t value) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_SETPROPERTY);
   MessageWriter_writeUInt16(vpin);
@@ -786,32 +935,38 @@ void rpc_blynk_setProperty(uint16_t vpin, const char* property, buffer_t value) 
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_syncAll(void) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_SYNCALL);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
-void rpc_blynk_syncVirtual(buffer_t vpins) {
+void rpc_blynk_syncVirtual(rpc_buffer_t vpins) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_SYNCVIRTUAL);
   MessageWriter_writeBinary(vpins);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_logEvent(const char* event_code, const char* description) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_LOGEVENT);
   MessageWriter_writeString(event_code);
@@ -819,54 +974,64 @@ void rpc_blynk_logEvent(const char* event_code, const char* description) {
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_resolveEvent(const char* event_code) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_RESOLVEEVENT);
   MessageWriter_writeString(event_code);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_resolveAllEvents(const char* event_code) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_RESOLVEALLEVENTS);
   MessageWriter_writeString(event_code);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_beginGroup(int64_t timestamp) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_BEGINGROUP);
   MessageWriter_writeInt64(timestamp);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_endGroup(void) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_ENDGROUP);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_blynk_setMetadata(const char* field, const char* value) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_BLYNK_SETMETADATA);
   MessageWriter_writeString(field);
@@ -874,6 +1039,7 @@ void rpc_blynk_setMetadata(const char* field, const char* value) {
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 #ifdef __cplusplus

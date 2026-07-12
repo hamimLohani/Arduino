@@ -1314,6 +1314,10 @@ void ATTClass::writeReqOrCmd(uint16_t connectionHandle, uint16_t mtu, uint8_t op
           writeBuffer[writeBufferSize] = valueLength;
           writeBufferSize += sizeof(valueLength);
 
+          if (writeBufferSize + valueLength > sizeof(writeBuffer)) {
+            sendError(connectionHandle, op, handle, ATT_ECODE_INSUFF_RESOURCES);
+            return;
+          }
           memcpy(&writeBuffer[writeBufferSize], value, valueLength);
           writeBufferSize += valueLength;
         }else{

@@ -73,7 +73,7 @@ void BlynkApi<Proto>::sendInfo()
 
 
 // Check if analog pins can be referenced by name on this device
-#if defined(analogInputToDigitalPin) && !defined(BLYNK_NO_ANALOG_PINS)
+#if defined(analogInputToDigitalPin)
     #define BLYNK_DECODE_PIN(it) (((it).asStr()[0] == 'A') ? analogInputToDigitalPin(atoi((it).asStr()+1)) : (it).asInt())
 #else
     #define BLYNK_DECODE_PIN(it) ((it).asInt())
@@ -157,10 +157,6 @@ void BlynkApi<Proto>::processCmd(const void* buff, size_t len)
         rsp.add(analogRead(pin));
         static_cast<Proto*>(this)->sendCmd(BLYNK_CMD_HARDWARE, 0, rsp.getBuffer(), rsp.getLength()-1);
     } break;
-
-// TODO: Remove workaround for ESP32
-#if !defined(ESP32)
-
     case BLYNK_HW_AW: {
         // Should be 1 parameter (value)
         if (++it >= param.end())
@@ -172,14 +168,8 @@ void BlynkApi<Proto>::processCmd(const void* buff, size_t len)
         analogWrite(pin, it.asInt());
     } break;
 
-#endif // TODO: Remove workaround for ESP32
-
 #endif
 
-    case BLYNK_HW_VR: {
-        BlynkReq req = { pin };
-        callReadHandler(req);
-    } break;
     case BLYNK_HW_VW: {
         ++it;
         char* start = (char*)it.asStr();

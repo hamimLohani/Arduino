@@ -16,11 +16,12 @@
 #endif
 
 static const char BLYNK_DEFAULT_ROOT_CA[] =
-#include <certs/letsencrypt_pem.h>
+#include <certs/certs_pem.h>
 
 #include <BlynkApiArduino.h>
 #include <Blynk/BlynkProtocol.h>
 #include <Adapters/BlynkArduinoClient.h>
+#include <WiFi.h>
 #include <WiFiClientSecure.h>
 
 template <typename Client>

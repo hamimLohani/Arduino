@@ -12,6 +12,7 @@ extern "C" {
 static inline
 RpcStatus rpc_mcu_ping(void) {
   RpcStatus _rpc_res;
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_MCU_PING);
   MessageWriter_end();
@@ -22,6 +23,7 @@ RpcStatus rpc_mcu_ping(void) {
   _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, 100);
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_res;
 }
 
@@ -29,10 +31,10 @@ RpcStatus rpc_mcu_ping(void) {
 static inline
 bool rpc_mcu_reboot(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_MCU_REBOOT);
   MessageWriter_end();
@@ -46,22 +48,27 @@ bool rpc_mcu_reboot(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
-
+/*
+ * Checks if UID is implemented
+ */
 static inline
 bool rpc_mcu_hasUID(uint16_t uid) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_MCU_HASUID);
   MessageWriter_writeUInt16(uid);
@@ -76,11 +83,14 @@ bool rpc_mcu_hasUID(uint16_t uid) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 

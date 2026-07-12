@@ -15,7 +15,12 @@
 #include <Blynk/BlynkApiNCP.h>
 #include <Blynk/BlynkUtility.h>
 #include <Blynk/BlynkTimer.h>
-#include <utility/BlynkNcpOtaImpl.h>
+
+#if defined(BLYNK_CUSTOM_NCP_OTA)
+  extern "C" void ota_run();
+#else
+  #include <utility/BlynkNcpOtaImpl.h>
+#endif
 
 #if defined(BLYNK_NCP_BAUD)
   // OK, use it
@@ -539,7 +544,7 @@ bool rpc_mcu_reboot_impl() {
     return false;
 }
 
-void rpc_client_blynkVPinChange_impl(uint16_t vpin, buffer_t param)
+void rpc_client_blynkVPinChange_impl(uint16_t vpin, rpc_buffer_t param)
 {
     // NOTE: we could copy the buffer, but we use 0-copy instead
     // But we need to 0-terminate it, overwriting the CRC8

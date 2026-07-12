@@ -17,7 +17,7 @@
         flashed using Blynk.NCP firmware.
 
    The easiest way to install the NCP firmware is using this PlatformIO project:
-   https://github.com/blynkkk/BlynkNcpExample
+   https://github.com/Blynk-Technologies/Blynk-NCP-Example-Arduino
 
  *************************************************************/
 
@@ -65,7 +65,7 @@ void setup() {
   } else {
     BLYNK_LOG("Cannot communicate to Blynk.NCP");
     BLYNK_LOG("  Please ensure you have flashed your board with the Blynk.NCP firmware, before running this example.");
-    BLYNK_LOG("  See: https://github.com/blynkkk/BlynkNcpExample");
+    BLYNK_LOG("  See: https://github.com/Blynk-Technologies/Blynk-NCP-Example-Arduino");
     return;
   }
 
@@ -75,7 +75,7 @@ void setup() {
   });
 
   // Set config mode timeout to 30 minutes, for testing purposes
-  Blynk.setConfigTimeout(30*60);
+  Blynk.setConfigTimeout(30 * 60);
 
   // White labeling (use this ONLY if you have a branded Blynk App)
   //Blynk.setVendorPrefix("MyCompany");
@@ -85,7 +85,7 @@ void setup() {
   Blynk.begin(BLYNK_TEMPLATE_ID, BLYNK_TEMPLATE_NAME);
 
   // Publish some data periodically
-  timer.setInterval(1000, []() {
+  timer.setInterval(10000, []() {
     Blynk.virtualWrite(V0, millis() / 1000);
   });
 }

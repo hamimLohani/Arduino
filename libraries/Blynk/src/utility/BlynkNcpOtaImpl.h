@@ -13,6 +13,8 @@
 #include "InternalStorageESP.h"
 #elif defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_NRF5)
 #include "InternalStorage.h"
+#elif defined(BLYNK_NCP_INTERNAL_STORAGE)
+#include "BlynkNcpInternalStorage.h"
 #else
   #warning "Blynk.Air: OTA update not implemented for this Primary MCU"
 
@@ -102,7 +104,7 @@ bool rpc_client_otaUpdateAvailable_impl(const char* filename, uint32_t filesize,
   return false;
 }
 
-bool rpc_client_otaUpdateWrite_impl(uint32_t offset, buffer_t chunk, uint32_t crc32)
+bool rpc_client_otaUpdateWrite_impl(uint32_t offset, rpc_buffer_t chunk, uint32_t crc32)
 {
   bool crcOK = (calcCRC32(chunk.data, chunk.length) == crc32);
 
@@ -153,7 +155,7 @@ bool rpc_client_otaUpdateFinish_impl()
     return false;
   }
 
-  buffer_t digest;
+  rpc_buffer_t digest;
   if (rpc_blynk_otaUpdateGetMD5(&digest)) {
     //LOG_HEX("Expected MD5:    ", digest.data, digest.length);
   }

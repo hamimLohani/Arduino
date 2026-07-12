@@ -10,7 +10,8 @@ extern "C" {
 
 
 static inline
-void rpc_client_blynkVPinChange(uint16_t vpin, buffer_t param) {
+void rpc_client_blynkVPinChange(uint16_t vpin, rpc_buffer_t param) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_CLIENT_BLYNKVPINCHANGE);
   MessageWriter_writeUInt16(vpin);
@@ -18,38 +19,43 @@ void rpc_client_blynkVPinChange(uint16_t vpin, buffer_t param) {
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_client_blynkStateChange(uint8_t state) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_CLIENT_BLYNKSTATECHANGE);
   MessageWriter_writeUInt8(state);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 void rpc_client_processEvent(uint8_t event) {
+  RPC_MUTEX_LOCK();
   /* Send request */
   MessageWriter_beginOneway(RPC_UID_CLIENT_PROCESSEVENT);
   MessageWriter_writeUInt8(event);
   MessageWriter_end();
 
   /* Oneway => skip response */
+  RPC_MUTEX_UNLOCK();
 }
 
 
 static inline
 bool rpc_client_otaUpdateAvailable(const char* filename, uint32_t filesize, const char* fw_type, const char* fw_ver, const char* fw_build) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_CLIENT_OTAUPDATEAVAILABLE);
   MessageWriter_writeString(filename);
@@ -62,28 +68,31 @@ bool rpc_client_otaUpdateAvailable(const char* filename, uint32_t filesize, cons
   /* Wait response */
   MessageBuffer _rsp_buff;
   MessageBuffer_init(&_rsp_buff, NULL, 0);
-  _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, RPC_TIMEOUT_DEFAULT);
+  _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, 5000);
   if (_rpc_res == RPC_STATUS_OK) {
     /* Deserialize outputs */
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
 
 static inline
-bool rpc_client_otaUpdateWrite(uint32_t offset, buffer_t chunk, uint32_t crc32) {
+bool rpc_client_otaUpdateWrite(uint32_t offset, rpc_buffer_t chunk, uint32_t crc32) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_CLIENT_OTAUPDATEWRITE);
   MessageWriter_writeUInt32(offset);
@@ -100,11 +109,14 @@ bool rpc_client_otaUpdateWrite(uint32_t offset, buffer_t chunk, uint32_t crc32) 
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -112,10 +124,10 @@ bool rpc_client_otaUpdateWrite(uint32_t offset, buffer_t chunk, uint32_t crc32) 
 static inline
 bool rpc_client_otaUpdateFinish(void) {
   RpcStatus _rpc_res;
-  /* Prepare return value */
   bool _rpc_ret_val;
   memset(&_rpc_ret_val, 0, sizeof(_rpc_ret_val));
 
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_CLIENT_OTAUPDATEFINISH);
   MessageWriter_end();
@@ -129,11 +141,14 @@ bool rpc_client_otaUpdateFinish(void) {
     MessageBuffer_readBool(&_rsp_buff, &_rpc_ret_val);
   }
   if (MessageBuffer_getError(&_rsp_buff) || MessageBuffer_availableToRead(&_rsp_buff)) {
-    rpc_set_status(_rpc_res = RPC_STATUS_ERROR_RETS_R);
+    _rpc_res = RPC_STATUS_ERROR_RETS_R;
+    rpc_set_status(_rpc_res);
+    RPC_MUTEX_UNLOCK();
     return _rpc_ret_val;
   }
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return _rpc_ret_val;
 }
 
@@ -141,6 +156,7 @@ bool rpc_client_otaUpdateFinish(void) {
 static inline
 void rpc_client_otaUpdateCancel(void) {
   RpcStatus _rpc_res;
+  RPC_MUTEX_LOCK();
   /* Send request */
   const uint16_t _rpc_seq = MessageWriter_beginInvoke(RPC_UID_CLIENT_OTAUPDATECANCEL);
   MessageWriter_end();
@@ -151,6 +167,7 @@ void rpc_client_otaUpdateCancel(void) {
   _rpc_res = rpc_wait_result(_rpc_seq, &_rsp_buff, RPC_TIMEOUT_DEFAULT);
 
   rpc_set_status(_rpc_res);
+  RPC_MUTEX_UNLOCK();
   return;
 }
 

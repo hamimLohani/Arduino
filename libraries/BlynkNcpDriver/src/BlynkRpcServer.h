@@ -67,6 +67,7 @@ rpc_handler_t rpc_find_uid_handler(uint16_t uid) {
   case RPC_UID_BLYNK_OTAUPDATEGETMD5:    return rpc_blynk_otaUpdateGetMD5_handler;
   case RPC_UID_BLYNK_OTAUPDATEGETSHA256: return rpc_blynk_otaUpdateGetSHA256_handler;
   case RPC_UID_BLYNK_OTAUPDATEPREFETCH:  return rpc_blynk_otaUpdatePrefetch_handler;
+  case RPC_UID_BLYNK_OTAUPDATESUSPEND:   return rpc_blynk_otaUpdateSuspend_handler;
 
   case RPC_UID_BLYNK_SETTIME:            return rpc_blynk_setTime_handler;
   case RPC_UID_BLYNK_GETTIME:            return rpc_blynk_getTime_handler;
@@ -78,7 +79,7 @@ rpc_handler_t rpc_find_uid_handler(uint16_t uid) {
 
 RpcStatus rpc_invoke_handler(uint16_t uid, MessageBuffer* buff) {
   rpc_handler_t handler = rpc_find_uid_handler(uid);
-  if (handler) {
+  if (handler != NULL) {
     handler(buff);
     return RPC_STATUS_OK;
   } else {

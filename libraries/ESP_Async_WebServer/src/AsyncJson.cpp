@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
-// Copyright 2016-2025 Hristo Gochkov, Mathieu Carbou, Emil Muratov
+// Copyright 2016-2026 Hristo Gochkov, Mathieu Carbou, Emil Muratov, Will Miles
 
 #include "AsyncJson.h"
+#include "AsyncWebServerLogging.h"
+
+#include <utility>
 
 #if ASYNC_JSON_SUPPORT == 1
+
+// Json content type response classes
 
 #if ARDUINOJSON_VERSION_MAJOR == 5
 AsyncJsonResponse::AsyncJsonResponse(bool isArray) : _isValid{false} {
@@ -56,7 +61,7 @@ size_t AsyncJsonResponse::_fillBuffer(uint8_t *data, size_t len) {
 #else
   serializeJson(_root, dest);
 #endif
-  return len;
+  return dest.written();
 }
 
 #if ARDUINOJSON_VERSION_MAJOR == 6
@@ -84,37 +89,65 @@ size_t PrettyAsyncJsonResponse::_fillBuffer(uint8_t *data, size_t len) {
 #else
   serializeJsonPretty(_root, dest);
 #endif
-  return len;
+  return dest.written();
 }
 
+// MessagePack content type response
+#if ASYNC_MSG_PACK_SUPPORT == 1
+
+size_t AsyncMessagePackResponse::setLength() {
+  _contentLength = measureMsgPack(_root);
+  if (_contentLength) {
+    _isValid = true;
+  }
+  return _contentLength;
+}
+
+size_t AsyncMessagePackResponse::_fillBuffer(uint8_t *data, size_t len) {
+  ChunkPrint dest(data, _sentLength, len);
+  serializeMsgPack(_root, dest);
+  return dest.written();
+}
+
+#endif
+
+// Body handler supporting both content types: JSON and MessagePack
+constexpr static WebRequestMethodComposite JsonHandlerMethods =
+  AsyncWebRequestMethod::HTTP_GET | AsyncWebRequestMethod::HTTP_POST | AsyncWebRequestMethod::HTTP_PUT | AsyncWebRequestMethod::HTTP_PATCH;
+
 #if ARDUINOJSON_VERSION_MAJOR == 6
-AsyncCallbackJsonWebHandler::AsyncCallbackJsonWebHandler(const String &uri, ArJsonRequestHandlerFunction onRequest, size_t maxJsonBufferSize)
-  : _uri(uri), _method(HTTP_GET | HTTP_POST | HTTP_PUT | HTTP_PATCH), _onRequest(onRequest), maxJsonBufferSize(maxJsonBufferSize), _maxContentLength(16384) {}
+AsyncCallbackJsonWebHandler::AsyncCallbackJsonWebHandler(AsyncURIMatcher uri, ArJsonRequestHandlerFunction onRequest, size_t maxJsonBufferSize)
+  : _uri(std::move(uri)),
+    _method(AsyncWebRequestMethod::HTTP_GET | AsyncWebRequestMethod::HTTP_POST | AsyncWebRequestMethod::HTTP_PUT | AsyncWebRequestMethod::HTTP_PATCH),
+    _onRequest(onRequest), maxJsonBufferSize(maxJsonBufferSize), _maxContentLength(16384) {}
 #else
-AsyncCallbackJsonWebHandler::AsyncCallbackJsonWebHandler(const String &uri, ArJsonRequestHandlerFunction onRequest)
-  : _uri(uri), _method(HTTP_GET | HTTP_POST | HTTP_PUT | HTTP_PATCH), _onRequest(onRequest), _maxContentLength(16384) {}
+AsyncCallbackJsonWebHandler::AsyncCallbackJsonWebHandler(AsyncURIMatcher uri, ArJsonRequestHandlerFunction onRequest)
+  : _uri(std::move(uri)),
+    _method(AsyncWebRequestMethod::HTTP_GET | AsyncWebRequestMethod::HTTP_POST | AsyncWebRequestMethod::HTTP_PUT | AsyncWebRequestMethod::HTTP_PATCH),
+    _onRequest(onRequest), _maxContentLength(16384) {}
 #endif
 
 bool AsyncCallbackJsonWebHandler::canHandle(AsyncWebServerRequest *request) const {
-  if (!_onRequest || !request->isHTTP() || !(_method & request->method())) {
+  if (!_onRequest || !request->isHTTP() || !_method.matches(request->method())) {
     return false;
   }
 
-  if (_uri.length() && (_uri != request->url() && !request->url().startsWith(_uri + "/"))) {
+  if (!_uri.matches(request)) {
     return false;
   }
 
-  if (request->method() != HTTP_GET && !request->contentType().equalsIgnoreCase(asyncsrv::T_application_json)) {
-    return false;
-  }
-
-  return true;
+#if ASYNC_MSG_PACK_SUPPORT == 1
+  return request->method() == AsyncWebRequestMethod::HTTP_GET || request->contentType().equalsIgnoreCase(asyncsrv::T_application_json)
+         || request->contentType().equalsIgnoreCase(asyncsrv::T_application_msgpack);
+#else
+  return request->method() == AsyncWebRequestMethod::HTTP_GET || request->contentType().equalsIgnoreCase(asyncsrv::T_application_json);
+#endif
 }
 
 void AsyncCallbackJsonWebHandler::handleRequest(AsyncWebServerRequest *request) {
   if (_onRequest) {
     // GET request:
-    if (request->method() == HTTP_GET) {
+    if (request->method() == AsyncWebRequestMethod::HTTP_GET) {
       JsonVariant json;
       _onRequest(request, json);
       return;
@@ -123,9 +156,7 @@ void AsyncCallbackJsonWebHandler::handleRequest(AsyncWebServerRequest *request) 
     // POST / PUT / ... requests:
     // check if JSON body is too large, if it is, don't deserialize
     if (request->contentLength() > _maxContentLength) {
-#ifdef ESP32
-      log_e("Content length exceeds maximum allowed");
-#endif
+      async_ws_log_w("Content length exceeds maximum allowed");
       request->send(413);
       return;
     }
@@ -137,26 +168,32 @@ void AsyncCallbackJsonWebHandler::handleRequest(AsyncWebServerRequest *request) 
     }
 
 #if ARDUINOJSON_VERSION_MAJOR == 5
-    DynamicJsonBuffer jsonBuffer;
-    JsonVariant json = jsonBuffer.parse((const char *)request->_tempObject);
-    if (json.success()) {
+    DynamicJsonBuffer doc;
 #elif ARDUINOJSON_VERSION_MAJOR == 6
-    DynamicJsonDocument jsonBuffer(this->maxJsonBufferSize);
-    DeserializationError error = deserializeJson(jsonBuffer, (const char *)request->_tempObject);
-    if (!error) {
-      JsonVariant json = jsonBuffer.as<JsonVariant>();
+    DynamicJsonDocument doc(this->maxJsonBufferSize);
 #else
-    JsonDocument jsonBuffer;
-    DeserializationError error = deserializeJson(jsonBuffer, (const char *)request->_tempObject);
-    if (!error) {
-      JsonVariant json = jsonBuffer.as<JsonVariant>();
+    JsonDocument doc;
 #endif
 
+#if ARDUINOJSON_VERSION_MAJOR == 5
+    JsonVariant json = doc.parse((const char *)request->_tempObject);
+    if (json.success()) {
       _onRequest(request, json);
-    } else {
-      // error parsing the body
-      request->send(400);
+      return;
     }
+#else
+    DeserializationError error = request->contentType().equalsIgnoreCase(asyncsrv::T_application_msgpack)
+                                   ? deserializeMsgPack(doc, (uint8_t *)(request->_tempObject))
+                                   : deserializeJson(doc, (const char *)request->_tempObject);
+    if (!error) {
+      JsonVariant json = doc.as<JsonVariant>();
+      _onRequest(request, json);
+      return;
+    }
+#endif
+
+    // error parsing the body
+    request->send(400);
   }
 }
 
@@ -168,13 +205,22 @@ void AsyncCallbackJsonWebHandler::handleBody(AsyncWebServerRequest *request, uin
     }
 
     if (index == 0) {
+      if (total == 0) {
+        // If total is 0, it is probably a chunked request without an
+        // X-Expected-Entity-Length header.  In that case there is
+        // no way to know the actual length in advance.  The best
+        // way to handle this would be to use a String instead of
+        // a fixed-length buffer, but for now we just reject.
+        async_ws_log_w("AsyncJson cannot handle chunked requests without X-Expected-Entity-Length");
+        request->abort();
+        return;
+      }
+
       // this check allows request->_tempObject to be initialized from a middleware
       if (request->_tempObject == NULL) {
         request->_tempObject = calloc(total + 1, sizeof(uint8_t));  // null-terminated string
         if (request->_tempObject == NULL) {
-#ifdef ESP32
-          log_e("Failed to allocate");
-#endif
+          async_ws_log_e("Failed to allocate");
           request->abort();
           return;
         }

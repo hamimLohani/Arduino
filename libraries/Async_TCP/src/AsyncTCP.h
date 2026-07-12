@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
-// Copyright 2016-2025 Hristo Gochkov, Mathieu Carbou, Emil Muratov
+// Copyright 2016-2026 Hristo Gochkov, Mathieu Carbou, Emil Muratov, Will Miles
 
 #ifndef ASYNCTCP_H_
 #define ASYNCTCP_H_
 
 #include "AsyncTCPVersion.h"
 #define ASYNCTCP_FORK_ESP32Async
-
-#ifndef LIBRETINY
-#include <esp_idf_version.h>
-#endif
 
 #ifdef ARDUINO
 #include "IPAddress.h"
@@ -103,16 +99,26 @@ public:
 #endif
 #endif
   bool connect(const char *host, uint16_t port);
+
   /**
      * @brief close connection
      *
      * @param now - ignored
      */
-  void close(bool now = false);
-  // same as close()
+  [[deprecated("Use AsyncClient::close() instead")]]
+  void close(bool now) {
+    close();
+  }
+  [[deprecated("Use AsyncClient::close() instead")]]
   void stop() {
-    close(false);
+    close();
   };
+
+  /**
+     * @brief close connection
+     */
+  void close();
+
   int8_t abort();
   bool free();
 

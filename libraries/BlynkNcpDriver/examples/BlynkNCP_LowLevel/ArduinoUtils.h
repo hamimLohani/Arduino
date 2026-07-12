@@ -33,6 +33,8 @@
   #define SerialNCP   BLYNK_NCP_SERIAL
 #elif defined(ARDUINO_NANO_RP2040_CONNECT)
   #define SerialNCP   SerialNina
+#elif defined(ARDUINO_TTGO_T_PICO_C3)
+  #define SerialNCP   Serial2
 #elif defined(LINUX)
   #include <compat/LibSerialPort.h>
   #if !defined(BLYNK_NCP_PORT)
@@ -136,7 +138,7 @@ const char* ncpGetStateString(uint8_t state) {
 }
 
 void virtualWrite(int virtualPin, const char* value) {
-  buffer_t val = { (uint8_t*)value, strlen(value) };
+  rpc_buffer_t val = { (uint8_t*)value, strlen(value) };
   rpc_blynk_virtualWrite(virtualPin, val);
 }
 

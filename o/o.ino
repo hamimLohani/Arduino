@@ -1,47 +1,61 @@
-#include <WiFi.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
 
-const char* ssid = "Harrenhal";
-const char* password = "flat_6b@";
+#define SDA_PIN 8
+#define SCL_PIN 9
 
-String inputIP = "";
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define MAX_LINES 8
+
+Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+String lines[MAX_LINES];
+
+void drawScreen() {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SH110X_WHITE);
+
+  for (int i = 0; i < MAX_LINES; i++) {
+    display.setCursor(2, i * 8);
+    display.println(lines[i]);
+  }
+
+  display.display();
+}
+
+void addLine(String text) {
+  for (int i = 0; i < MAX_LINES - 1; i++) {
+    lines[i] = lines[i + 1];
+  }
+  lines[MAX_LINES - 1] = text;
+
+  drawScreen();
+}
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
-  
-  Serial.println("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+
+  Wire.begin(SDA_PIN, SCL_PIN);
+
+  if (!display.begin(0x3C, true)) {
+    while (1);
   }
-  Serial.println("\nWiFi Connected ✅");
-  Serial.println(WiFi.localIP());
-  Serial.println("Enter an IP to check:");
+
+  addLine("OLED Ready");
+  addLine("Type below...");
 }
 
 void loop() {
+
   if (Serial.available()) {
-    inputIP = Serial.readStringUntil('\n');
-    inputIP.trim();
+    String text = Serial.readStringUntil('\n');
+    text.trim();
 
-    IPAddress ip;
-    if (ip.fromString(inputIP)) {
-      Serial.print("Checking IP: ");
-      Serial.println(ip);
-
-      WiFiClient client;
-
-      // Try connecting to port 80 (HTTP)
-      if (client.connect(ip, 80)) {
-        Serial.println("✅ IP is online (port 80 reachable).");
-        client.stop();
-      } else {
-        Serial.println("❌ IP is unreachable or port is closed.");
-      }
-    } else {
-      Serial.println("⚠️ Invalid IP format.");
+    if (text.length() > 0) {
+      addLine(text);
     }
-
-    Serial.println("\nEnter another IP to check:");
   }
 }

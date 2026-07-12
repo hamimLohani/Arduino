@@ -9,7 +9,7 @@ DHT dht(DHTPIN, DHTTYPE);  // Create DHT object
 void setup() {
   Serial.begin(9600);      // Start serial monitor
   dht.begin();             // Initialize the sensor
-  pinMode(PIN, OUTPUT);
+  pinMode(PIN, OUTPUT); 
 }
 
 void loop() {

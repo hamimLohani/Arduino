@@ -5,7 +5,7 @@ To call factory test functions, please ensure that:
 - NCP is initialized and is responding
 - NCP is not configured (configuration is reset, the device is not connected to the cloud)
 
-## `rpc_blynk_factoryTestWiFiAP(channel)`
+## `rpc_blynk_factoryTestWiFiAP(Int16 channel)`
 
 Start a SoftAP on the specified WiFi channel. This can be used for the frequency test.
 
@@ -13,14 +13,14 @@ Start a SoftAP on the specified WiFi channel. This can be used for the frequency
 - `RPC_FACTORY_TEST_INVALID_ARGS` - call is incorrect
 - `RPC_FACTORY_TEST_OK` - all is OK
 
-## `rpc_blynk_factoryTestWiFi(ssid, pass, *rssi)`
+## `rpc_blynk_factoryTestWiFi(String ssid, String pass, Int16 *rssi)`
 
 Perform a connection to the specified WiFi 2.4 Ghz hotspot.
 
 **Returns:** `RpcFactoryTestStatus`
 - `RPC_FACTORY_TEST_INVALID_ARGS` - call is incorrect
 - `RPC_FACTORY_TEST_WIFI_FAIL` - cannot connect
-- `RPC_FACTORY_TEST_LOW_RSSI` - RSSI is **less than -70 dBm**
+- `RPC_FACTORY_TEST_LOW_RSSI` - RSSI is **less than -85 dBm**
 - `RPC_FACTORY_TEST_OK` - all is OK
 
 ## `rpc_blynk_factoryTestConnect()`

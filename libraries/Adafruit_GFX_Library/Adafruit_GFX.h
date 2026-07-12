@@ -73,6 +73,10 @@ public:
   void fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
   void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
                         int16_t delta, uint16_t color);
+  void drawEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
+                   uint16_t color);
+  void fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh,
+                   uint16_t color);
   void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
                     int16_t y2, uint16_t color);
   void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2,
@@ -81,6 +85,11 @@ public:
                      int16_t radius, uint16_t color);
   void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
                      int16_t radius, uint16_t color);
+  void drawRotatedRect(int16_t cenX, int16_t cenY, int16_t w, int16_t h,
+                       int16_t angleDeg, uint16_t color);
+  void fillRotatedRect(int16_t cenX, int16_t cenY, int16_t w, int16_t h,
+                       int16_t angleDeg, uint16_t color);
+  void rotatePoint(int16_t &x0, int16_t &y0, int16_t angleDeg);
   void drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w,
                   int16_t h, uint16_t color);
   void drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w,
